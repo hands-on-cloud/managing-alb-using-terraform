@@ -1,16 +1,16 @@
 resource "aws_s3_bucket" "remote_state" {
-  bucket = "${local.prefix}-s3"
-  acl    = "private"
+  bucket        = "${local.prefix}-s3"
+  acl           = "private"
   force_destroy = true
 
   versioning {
     enabled = true
   }
-  
+
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
-        sse_algorithm     = "AES256"
+        sse_algorithm = "AES256"
       }
     }
   }
