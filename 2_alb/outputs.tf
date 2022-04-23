@@ -1,5 +1,6 @@
 output "alb_security_group_id" {
-  value = module.alb_sg.security_group_id
+  value       = module.alb_sg.security_group_id
+  description = "The security group ID of the ALB"
 }
 
 output "alb_target_group_id" {
