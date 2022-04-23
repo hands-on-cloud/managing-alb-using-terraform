@@ -1,8 +1,9 @@
 locals {
-  remote_state_bucket_region = "us-west-2"
-  remote_state_bucket        = "hands-on-cloud-terraform-remote-state-s3"
-  infrastructure_state_file  = "managing-alb-using-terraform-infrastructure.tfstate"
-  alb_state_file             = "managing-alb-using-terraform-alb.tfstate"
+  remote_state_bucket_region     = "us-west-2"
+  remote_state_bucket            = "hands-on-cloud-terraform-remote-state-s3"
+  infrastructure_state_file      = "managing-alb-using-terraform-infrastructure.tfstate"
+  alb_state_file                 = "managing-alb-using-terraform-alb.tfstate"
+  alb_ip_target_group_state_file = "managing-alb-using-terraform-alb-ip-target-group.tfstate"
 
   prefix          = data.terraform_remote_state.infrastructure.outputs.prefix
   common_tags     = data.terraform_remote_state.infrastructure.outputs.common_tags
@@ -27,5 +28,14 @@ data "terraform_remote_state" "alb" {
     bucket = local.remote_state_bucket
     region = local.remote_state_bucket_region
     key    = local.alb_state_file
+  }
+}
+
+data "terraform_remote_state" "ip_tg" {
+  backend = "s3"
+  config = {
+    bucket = local.remote_state_bucket
+    region = local.remote_state_bucket_region
+    key    = local.alb_ip_target_group_state_file
   }
 }
