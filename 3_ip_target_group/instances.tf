@@ -33,7 +33,7 @@ module "instance_sg" {
     }
   ]
 }
-/*
+
 resource "aws_instance" "nginx" {
   count                       = length(local.private_subnets)
   ami                         = local.ec2_ami
@@ -78,10 +78,10 @@ resource "aws_instance" "web" {
     local.common_tags
   )
 
-  connection { 
+  connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = file("~/.ssh/albdemo") 
+    private_key = file("~/.ssh/albdemo")
     host        = self.public_ip
   }
 
@@ -91,6 +91,6 @@ resource "aws_instance" "web" {
       "sudo apt install docker.io -y",
       "sudo docker run -d -p 80:80 yeasy/simple-web"
     ]
-  }    
+  }
 
-}*/
+}

@@ -1,4 +1,4 @@
-/*locals {
+locals {
   listener_arn = data.terraform_remote_state.alb.outputs.listener_arn
 
 }
@@ -15,4 +15,4 @@ resource "aws_lb_listener_rule" "rule1" {
       values = ["/ip/*"]
     }
   }
-}*/
+}

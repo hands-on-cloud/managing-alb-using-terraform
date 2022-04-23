@@ -68,27 +68,6 @@ resource "aws_lb" "web" {
 # ---------- Create AWS ALB Target Group -----------
 
 resource "aws_lb_target_group" "web" {
-  name     = "${local.prefix}-tg"
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = local.vpc_id
-
-  health_check {
-    healthy_threshold   = 5
-    unhealthy_threshold = 2
-    timeout             = 5
-    interval            = 30
-  }
-
-  tags = merge(
-    {
-      Name = "${local.prefix}-tg"
-    },
-    local.common_tags
-  )
-}
-
-resource "aws_lb_target_group" "sample" {
   name     = "${local.prefix}-web"
   port     = 80
   protocol = "HTTP"
@@ -109,8 +88,10 @@ resource "aws_lb_target_group" "sample" {
   )
 }
 
-resource "aws_lb_target_group" "autoscale" {
-  name     = "asg-tg"
+# ---------- Create AWS ALB Target Group ----------- ( used in path-based topic)
+
+resource "aws_lb_target_group" "sample" {
+  name     = "${local.prefix}-path"
   port     = 80
   protocol = "HTTP"
   vpc_id   = local.vpc_id
@@ -124,14 +105,16 @@ resource "aws_lb_target_group" "autoscale" {
 
   tags = merge(
     {
-      Name = "asg-tg"
+      Name = "${local.prefix}-path"
     },
     local.common_tags
   )
 }
 
-resource "aws_lb_target_group" "bluetg" {
-  name     = "blue-tg"
+# ---------- Create AWS ALB Target Group ----------- ( used in attach alb to autocaling group)
+
+resource "aws_lb_target_group" "autoscale" {
+  name     = "${local.prefix}-asg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = local.vpc_id
@@ -145,14 +128,37 @@ resource "aws_lb_target_group" "bluetg" {
 
   tags = merge(
     {
-      Name = "blue-tg"
+      Name = "${local.prefix}-asg"
+    },
+    local.common_tags
+  )
+}
+
+# ---------- Create AWS ALB Target Group ----------- ( used in attach alb to multiple asg topic)
+
+resource "aws_lb_target_group" "bluetg" {
+  name     = "${local.prefix}-blue"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = local.vpc_id
+
+  health_check {
+    healthy_threshold   = 5
+    unhealthy_threshold = 2
+    timeout             = 5
+    interval            = 30
+  }
+
+  tags = merge(
+    {
+      Name = "${local.prefix}-blue"
     },
     local.common_tags
   )
 }
 
 resource "aws_lb_target_group" "greentg" {
-  name     = "green-tg"
+  name     = "${local.prefix}-green"
   port     = 80
   protocol = "HTTP"
   vpc_id   = local.vpc_id
@@ -166,19 +172,21 @@ resource "aws_lb_target_group" "greentg" {
 
   tags = merge(
     {
-      Name = "green-tg"
+      Name = "${local.prefix}-green"
     },
     local.common_tags
   )
 }
 
+# ---------- Create AWS ALB Target Group ----------- ( used in attach alb to lambda topic)
+
 resource "aws_lb_target_group" "lambdatg" {
-  name        = "lambda-tg"
+  name        = "${local.prefix}-lambda"
   target_type = "lambda"
 
   tags = merge(
     {
-      Name = "lambda-tg"
+      Name = "${local.prefix}-lambda"
     },
     local.common_tags
   )
@@ -251,7 +259,7 @@ resource "aws_lb_listener" "lambda" {
   protocol          = "HTTP"
 
   default_action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.lambdatg.arn
   }
 }
