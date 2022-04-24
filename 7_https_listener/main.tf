@@ -30,12 +30,3 @@ data "terraform_remote_state" "alb" {
     key    = local.alb_state_file
   }
 }
-
-data "terraform_remote_state" "ip_tg" {
-  backend = "s3"
-  config = {
-    bucket = local.remote_state_bucket
-    region = local.remote_state_bucket_region
-    key    = local.alb_ip_target_group_state_file
-  }
-}
