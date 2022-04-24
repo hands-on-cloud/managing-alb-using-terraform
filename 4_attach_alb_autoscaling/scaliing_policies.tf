@@ -52,5 +52,4 @@ resource "aws_cloudwatch_metric_alarm" "web_cpu_alarm_down" {
 
   alarm_description = "This metric monitor EC2 instance CPU utilization"
   alarm_actions     = [aws_autoscaling_policy.web_scale_in_policy.arn]
-
-}  
+}
