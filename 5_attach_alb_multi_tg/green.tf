@@ -1,16 +1,14 @@
 locals {
-  green_tg = data.terraform_remote_state.alb.outputs.green_tg
+  green_resource_name = trimsuffix(substr("${local.prefix}-green", 0, 32), "-")
 }
 
-
 resource "aws_launch_configuration" "green" {
-  name_prefix = "green-"
+  name_prefix = local.green_resource_name
 
   image_id      = local.ec2_ami # ubuntu 20.04 AMI (HVM), SSD Volume Type
   instance_type = local.ec2_instance_type
-  key_name      = aws_key_pair.ec2.id
 
-  security_groups             = [local.sg_id]
+  security_groups             = [module.instance_sg.security_group_id]
   associate_public_ip_address = true
 
   user_data = <<-EOF
@@ -30,7 +28,7 @@ service nginx start
 }
 
 resource "aws_autoscaling_group" "green" {
-  name = "${local.prefix}-green"
+  name = local.green_resource_name
 
   min_size         = local.min_instance
   desired_capacity = local.min_instance
@@ -38,22 +36,44 @@ resource "aws_autoscaling_group" "green" {
 
   health_check_type = "ELB"
 
-  target_group_arns    = [local.green_tg]
+  target_group_arns    = [aws_lb_target_group.green.arn]
   launch_configuration = aws_launch_configuration.green.name
 
   metrics_granularity = "1Minute"
 
   vpc_zone_identifier = local.public_subnets
 
-  # Required to redeploy without an outage.
   lifecycle {
     create_before_destroy = true
   }
 
   tag {
     key                 = "Name"
-    value               = "${local.prefix}-green"
+    value               = local.green_resource_name
     propagate_at_launch = true
   }
 
+}
+
+# ------- ALB Target Group --------
+
+resource "aws_lb_target_group" "green" {
+  name     = local.green_resource_name
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = local.vpc_id
+
+  health_check {
+    healthy_threshold   = 5
+    unhealthy_threshold = 2
+    timeout             = 5
+    interval            = 30
+  }
+
+  tags = merge(
+    {
+      Name = local.green_resource_name
+    },
+    local.common_tags
+  )
 }
