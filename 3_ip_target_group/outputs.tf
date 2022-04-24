@@ -1,4 +1,3 @@
-output "instance_sg_id" {
-  value = module.instance_sg.security_group_id
-
+output "alb_dns_name" {
+  value = data.terraform_remote_state.alb.outputs.alb_dns_name
 }
