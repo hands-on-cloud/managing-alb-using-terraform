@@ -9,7 +9,6 @@ locals {
   vpc_id          = data.terraform_remote_state.infrastructure.outputs.vpc_id
   public_subnets  = data.terraform_remote_state.infrastructure.outputs.public_subnets
   private_subnets = data.terraform_remote_state.infrastructure.outputs.private_subnets
-
 }
 
 data "terraform_remote_state" "infrastructure" {
