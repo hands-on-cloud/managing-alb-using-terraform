@@ -15,9 +15,12 @@ sections:
 
 content: |-
     {{ include "./usage.md" }}
-    {{ .Providers }}
-    {{ .Resources }}
+    {{ .Inputs }}
+    {{ .Modules }}
     {{ .Outputs }}
+    {{ .Providers }}
+    {{ .Requirements }}
+    {{ .Resources }}
 
 output:
   file: README.md
