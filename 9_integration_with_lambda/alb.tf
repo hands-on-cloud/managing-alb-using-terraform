@@ -1,8 +1,5 @@
 locals {
-  resource_name = trimsuffix(substr("${local.prefix}-lambda", 0, 32), "-")
-}
-
-locals {
+  resource_name             = trimsuffix(substr("${local.prefix}-lambda", 0, 32), "-")
   alb_arn                   = data.terraform_remote_state.alb.outputs.alb_arn
   alb_sg                    = data.terraform_remote_state.alb.outputs.alb_security_group_id
 }
