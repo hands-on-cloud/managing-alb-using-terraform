@@ -2,8 +2,6 @@ locals {
   remote_state_bucket_region    = "us-west-2"
   remote_state_bucket           = "hands-on-cloud-terraform-remote-state-s3"
   infrastructure_state_file     = "managing-alb-using-terraform-infrastructure.tfstate"
-  alb_access_logging_state_file = "managing-alb-using-terraform-alb-access-logging.tfstate"
-  alb_https_listener_state_file = "managing-alb-using-terraform-alb-https-listener.tfstate"
 
   prefix          = data.terraform_remote_state.infrastructure.outputs.prefix
   common_tags     = data.terraform_remote_state.infrastructure.outputs.common_tags
