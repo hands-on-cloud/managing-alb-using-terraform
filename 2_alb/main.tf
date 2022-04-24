@@ -20,22 +20,3 @@ data "terraform_remote_state" "infrastructure" {
     key    = local.infrastructure_state_file
   }
 }
-
-data "terraform_remote_state" "alb_access_logging" {
-  backend = "s3"
-  config = {
-    bucket = local.remote_state_bucket
-    region = local.remote_state_bucket_region
-    key    = local.alb_access_logging_state_file
-  }
-}
-
-data "terraform_remote_state" "alb_https_listener" {
-  backend = "s3"
-  config = {
-    bucket = local.remote_state_bucket
-    region = local.remote_state_bucket_region
-    key    = local.alb_https_listener_state_file
-  }
-}
-
