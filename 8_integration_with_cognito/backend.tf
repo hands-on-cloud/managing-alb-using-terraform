@@ -4,5 +4,6 @@ terraform {
     key     = "managing-alb-using-terraform-alb-cognito.tfstate"
     region  = "us-west-2"
     encrypt = "true"
+    dynamodb_table = "hands-on-cloud-terraform-remote-state-dynamodb"
   }
 }

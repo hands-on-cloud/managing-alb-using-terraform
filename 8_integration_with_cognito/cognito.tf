@@ -1,13 +1,15 @@
 locals {
-  callback_urls      = ["https://managing-alb-using-terraform-1082358576.us-east-1.elb.amazonaws.com/"]
-  https_listener_arn = data.terraform_remote_state.alb.outputs.https_listener_arn
-  target_group_arn   = data.terraform_remote_state.alb.outputs.alb_target_group_id
-  user_pool_domain   = "hands-on-cloud-alb"
+  alb_url            = data.terraform_remote_state.https_listener.outputs.alb_dns_name
+  https_listener_arn = data.terraform_remote_state.https_listener.outputs.alb_listener_arn
+  target_group_arn   = data.terraform_remote_state.https_listener.outputs.alb_target_group_arn
+  callback_urls      = ["https://${local.alb_url}/"]
+  user_pool_domain   = "${local.prefix}-user-pool"
 }
-module "cognitoauth" {
+
+module "cognito" {
   source = "git::https://www.github.com/rhythmictech/terraform-aws-elb-cognito-auth?ref=v0.1.1"
 
-  name                = "example"
+  name                = local.user_pool_domain
   callback_urls       = local.callback_urls
   listener_arn        = local.https_listener_arn
   target_group_arn    = local.target_group_arn
